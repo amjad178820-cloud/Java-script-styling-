@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Text Styler</title>
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --panel: #ffffff;
+            --ink: #1b2430;
+            --line: #d5dbe3;
+            --accent: #1f6feb;
+        }
+        body.dark {
+            --bg: #1b1f27;
+            --panel: #262b35;
+            --ink: #f1f3f6;
+            --line: #3b4250;
+            --accent: #6aa5ff;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0 16px 24px;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            transition: background .2s, color .2s;
+        }
+        h1 {
+            font-size: 20px;
+            margin: 0;
+            padding: 12px 0 8px;
+        }
+
+        /* Preview stays pinned at the top while you click buttons */
+        .preview {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg);
+            padding-bottom: 12px;
+        }
+        .preview-box {
+            background: var(--panel);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 110px;
+            max-height: 30vh;
+            overflow: auto;
+        }
+        #myText {
+            margin: 0;
+            font-size: 20px;
+            outline: none;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .group {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 10px 12px 12px;
+        }
+        .group h3 {
+            margin: 0 0 8px;
+            font-size: 14px;
+        }
+        .btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        button {
+            font: inherit;
+            font-size: 13px;
+            padding: 6px 10px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--ink);
+            cursor: pointer;
+        }
+        button:hover { border-color: var(--accent); }
+        button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .swatch { padding-left: 8px; }
+        .swatch::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+            background: var(--c);
+            border: 1px solid var(--line);
+        }
+        .reset {
+            background: #d93636;
+            border-color: #d93636;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body id="page">
+
+    <div class="preview">
+        <h1>Interactive Text Styler</h1>
+        <div class="preview-box">
+            <p id="myText" contenteditable="true">
+                Welcome to JavaScript Text Styler!
+                You can edit this text and change its appearance.
+            </p>
+        </div>
+    </div>
+
+    <div class="controls">
+
+        <div class="group">
+            <h3>Text Color</h3>
+            <div class="btns">
+                <button class="swatch" style="--c:red" onclick="changeColor('red')">Red</button>
+                <button class="swatch" style="--c:blue" onclick="changeColor('blue')">Blue</button>
+                <button class="swatch" style="--c:green" onclick="changeColor('green')">Green</button>
+                <button class="swatch" style="--c:black" onclick="changeColor('black')">Black</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Background Color</h3>
+            <div class="btns">
+                <button class="swatch" style="--c:yellow" onclick="changeBackground('yellow')">Yellow</button>
+                <button class="swatch" style="--c:lightgreen" onclick="changeBackground('lightgreen')">Green</button>
+                <button class="swatch" style="--c:lightblue" onclick="changeBackground('lightblue')">Blue</button>
+                <button class="swatch" style="--c:white" onclick="changeBackground('white')">White</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Font Size</h3>
+            <div class="btns">
+                <button onclick="changeSize(2)">Increase (+)</button>
+                <button onclick="changeSize(-2)">Decrease (-)</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Font Family</h3>
+            <div class="btns">
+                <button onclick="changeFont('Arial')">Arial</button>
+                <button onclick="changeFont('Georgia')">Georgia</button>
+                <button onclick="changeFont('Courier New')">Courier New</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Bold and Italic</h3>
+            <div class="btns">
+                <button onclick="boldText()"><b>Bold</b></button>
+                <button onclick="italicText()"><i>Italic</i></button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Alignment</h3>
+            <div class="btns">
+                <button onclick="alignText('left')">Left</button>
+                <button onclick="alignText('center')">Center</button>
+                <button onclick="alignText('right')">Right</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Text Decoration</h3>
+            <div class="btns">
+                <button onclick="decoration('underline')">Underline</button>
+                <button onclick="decoration('overline')">Overline</button>
+                <button onclick="decoration('line-through')">Line Through</button>
+                <button onclick="decoration('none')">Remove</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Letter Case</h3>
+            <div class="btns">
+                <button onclick="changeCase('upper')">Uppercase</button>
+                <button onclick="changeCase('lower')">Lowercase</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Page Mode</h3>
+            <div class="btns">
+                <button onclick="toggleMode()">Toggle Dark / Light</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h3>Reset</h3>
+            <div class="btns">
+                <button class="reset" onclick="resetText()">Reset Everything</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let text = document.getElementById("myText");
+
+        let originalText = text.innerHTML;
+        let fontSize = 20;
+        let isBold = false;
+        let isItalic = false;
+
+        function changeColor(color) {
+            text.style.color = color;
+        }
+
+        function changeBackground(color) {
+            text.style.backgroundColor = color;
+        }
+
+        function changeSize(amount) {
+            fontSize += amount;
+            if (fontSize < 8) fontSize = 8;
+            if (fontSize > 100) fontSize = 100;
+            text.style.fontSize = fontSize + "px";
+        }
+
+        function changeFont(font) {
+            text.style.fontFamily = font;
+        }
+
+        function decoration(type) {
+            text.style.textDecoration = type;
+        }
+
+        function boldText() {
+            isBold = !isBold;
+            text.style.fontWeight = isBold ? "bold" : "normal";
+        }
+
+        function italicText() {
+            isItalic = !isItalic;
+            text.style.fontStyle = isItalic ? "italic" : "normal";
+        }
+
+        function alignText(position) {
+            text.style.textAlign = position;
+        }
+
+        function changeCase(type) {
+            if (type === "upper") {
+                text.innerText = text.innerText.toUpperCase();
+            } else {
+                text.innerText = text.innerText.toLowerCase();
+            }
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle("dark");
+        }
+
+        function resetText() {
+            text.innerHTML = originalText;
+            text.removeAttribute("style");
+            fontSize = 20;
+            isBold = false;
+            isItalic = false;
+            document.body.classList.remove("dark");
+        }
+    </script>
+
+</body>
+</html>
